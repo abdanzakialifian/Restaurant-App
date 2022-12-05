@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:restaurant_app/data/model/foods.dart';
-import 'package:restaurant_app/data/model/restaurants.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/model/detail_restaurant_response.dart';
+import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/style/color.dart';
-import '../../data/model/drinks.dart';
+import 'package:restaurant_app/ui/detail/list_menus.dart';
+import 'package:restaurant_app/ui/detail/list_review.dart';
+import 'package:restaurant_app/ui/detail/shimmer_loading_detail.dart';
+import 'package:restaurant_app/ui/detail/shimmer_loading_review.dart';
+import 'package:restaurant_app/ui/globals/custom_text_input.dart';
+import 'package:restaurant_app/ui/globals/empty_animation.dart';
+import 'package:restaurant_app/ui/globals/error_animation.dart';
+import 'package:restaurant_app/utils/globals.dart';
+import 'package:restaurant_app/utils/result_state.dart';
 
-class DetailPage extends StatefulWidget {
-  final Restaurants restaurants;
-
-  const DetailPage({Key? key, required this.restaurants}) : super(key: key);
-
-  @override
-  State<DetailPage> createState() => _DetailPageState();
-}
-
-class _DetailPageState extends State<DetailPage> {
-  bool isFavorite = false;
+class DetailPage extends StatelessWidget {
+  const DetailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,324 +23,344 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: darkGreen,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: (() {
-                        setState(() {
-                          !isFavorite ? isFavorite = true : isFavorite = false;
-                          SnackBar addFavorite = SnackBar(
-                            content: Text(
-                                "${widget.restaurants.name} added to favorite"),
-                            duration: const Duration(seconds: 1),
-                          );
-                          SnackBar deleteFavorite = SnackBar(
-                            content: Text(
-                                "${widget.restaurants.name} deleted from favorite"),
-                            duration: const Duration(seconds: 1),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            !isFavorite ? deleteFavorite : addFavorite,
-                          );
-                        });
-                      }),
-                      icon: !isFavorite
-                          ? const Icon(
-                              Icons.favorite_border,
-                              color: Colors.white,
-                            )
-                          : const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 150),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(
-                          height: 110,
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            widget.restaurants.name ?? "",
-                            style: const TextStyle(
-                                fontFamily: "Poppins Bold", fontSize: 20),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/ic_marker_location.png",
-                                    height: 15,
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    widget.restaurants.city ?? "",
-                                    style: const TextStyle(
-                                      fontFamily: "Poppins Medium",
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  RatingBarIndicator(
-                                    itemSize: 20,
-                                    itemCount: 5,
-                                    unratedColor: Colors.amber.withAlpha(50),
-                                    rating:
-                                        widget.restaurants.rating?.toDouble() ??
-                                            0.0,
-                                    itemBuilder: (context, index) => const Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "${widget.restaurants.rating?.toDouble() ?? 0}",
-                                    style: const TextStyle(
-                                      fontFamily: "Poppins Medium",
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            widget.restaurants.description ?? "",
-                            style: const TextStyle(
-                                fontFamily: "Poppins Regular",
-                                fontSize: 12,
-                                color: darkGrey),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 20),
-                          child: Text(
-                            "Foods",
-                            style: TextStyle(
-                                fontFamily: "Poppins Bold",
-                                fontSize: 16,
-                                color: darkGreen),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 130,
-                          child: _listCardFoods(context),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 20),
-                          child: Text(
-                            "Drinks",
-                            style: TextStyle(
-                                fontFamily: "Poppins Bold",
-                                fontSize: 16,
-                                color: darkGreen),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 130,
-                          child: _listCardDrinks(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 45),
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(255, 175, 175, 175),
-                          blurRadius: 0.5,
-                          spreadRadius: 0.2,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(widget.restaurants.pictureId ?? ""),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: _getDetailRestaurant(context),
         ),
       ),
     );
   }
 
-  Widget _listCardFoods(BuildContext context) {
-    List<Foods> listFoods = widget.restaurants.menus?.foods ?? <Foods>[];
-    return ListView.separated(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      separatorBuilder: (context, index) => const SizedBox(
-        width: 10,
-      ),
-      itemCount: listFoods.length,
-      itemBuilder: (context, index) {
-        return Container(
-          width: 150,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromARGB(255, 175, 175, 175),
-                blurRadius: 0.5,
-                spreadRadius: 0.2,
-                offset: Offset(1, 2),
-              )
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/ic_food.png",
-                width: 50,
-                height: 50,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  listFoods[index].name ?? "",
-                  style: const TextStyle(
-                    fontFamily: "Poppins Medium",
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        );
+  Widget _getDetailRestaurant(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context).size.height;
+    return Consumer<DetailRestaurantProvider>(
+      builder: (context, value, child) {
+        if (value.state == ResultState.loading) {
+          return const ShimmerLoadingDetail();
+        } else if (value.state == ResultState.hasData) {
+          return _detailRestaurantInformation(
+              context, value.restaurantResultResponse);
+        } else if (value.state == ResultState.noData) {
+          return const Center(
+            child: EmptyAnimation(),
+          );
+        } else {
+          return ConstrainedBox(
+            constraints: BoxConstraints.tightFor(height: mediaQuery),
+            child: const Center(
+              child: ErrorAnimation(),
+            ),
+          );
+        }
       },
     );
   }
 
-  Widget _listCardDrinks(BuildContext context) {
-    List<Drinks> listDrinks = widget.restaurants.menus?.drinks ?? <Drinks>[];
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      separatorBuilder: (context, index) => const SizedBox(
-        width: 10,
-      ),
-      itemCount: listDrinks.length,
-      itemBuilder: (context, index) {
-        return Container(
-          width: 150,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromARGB(255, 175, 175, 175),
-                blurRadius: 0.5,
-                spreadRadius: 0.2,
-                offset: Offset(1, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+  Widget _updateReviewRestaurant() {
+    return Consumer<DetailRestaurantProvider>(
+      builder: (context, value, child) {
+        if (value.stateReview == ResultState.loading) {
+          return const ShimmerLoadingReview();
+        } else if (value.stateReview == ResultState.hasData) {
+          return ListReview(provider: value, from: Globals.fromReview);
+        } else if (value.stateReview == ResultState.noData) {
+          return const EmptyAnimation();
+        } else {
+          return const ErrorAnimation();
+        }
+      },
+    );
+  }
+
+  Widget _detailRestaurantInformation(
+      BuildContext context, RestaurantResultResponse result) {
+    final provider =
+        Provider.of<DetailRestaurantProvider>(context, listen: false);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                "assets/images/ic_drink.png",
-                height: 50,
-                width: 50,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  listDrinks[index].name ?? "",
-                  style: const TextStyle(
-                    fontFamily: "Poppins Medium",
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
                 ),
               ),
+              _favoriteButton(provider, context),
             ],
           ),
+        ),
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 150),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(
+                    height: 110,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      result.name ?? "",
+                      style: const TextStyle(
+                          fontFamily: "Poppins Bold", fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              "assets/images/ic_marker_location.png",
+                              height: 15,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              result.city ?? "",
+                              style: const TextStyle(
+                                fontFamily: "Poppins Medium",
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            RatingBarIndicator(
+                              itemSize: 20,
+                              itemCount: 5,
+                              unratedColor: Colors.amber.withAlpha(50),
+                              rating: result.rating?.toDouble() ?? 0.0,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "${result.rating?.toDouble() ?? 0}",
+                              style: const TextStyle(
+                                fontFamily: "Poppins Medium",
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      result.description ?? "",
+                      style: const TextStyle(
+                        fontFamily: "Poppins Regular",
+                        fontSize: 12,
+                        color: darkGrey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text(
+                      "Foods",
+                      style: TextStyle(
+                          fontFamily: "Poppins Bold",
+                          fontSize: 16,
+                          color: darkGreen),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 130,
+                    child: ListMenus(
+                      provider: provider,
+                      menus: Globals.foodMenu,
+                      imageAsset: "assets/images/ic_food.png",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text(
+                      "Drinks",
+                      style: TextStyle(
+                          fontFamily: "Poppins Bold",
+                          fontSize: 16,
+                          color: darkGreen),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 130,
+                    child: ListMenus(
+                      provider: provider,
+                      menus: Globals.drinkMenu,
+                      imageAsset: "assets/images/ic_drink.png",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text(
+                      "Review",
+                      style: TextStyle(
+                          fontFamily: "Poppins Bold",
+                          fontSize: 16,
+                          color: darkGreen),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: CustomTextInput(
+                        hintText: "Input your name...",
+                        height: 40,
+                        controller: provider.name),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: CustomTextInput(
+                      hintText: "Input your review...",
+                      height: 100,
+                      controller: provider.review,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: darkGreen,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      onPressed: () {
+                        provider.postReviewCustomer(
+                          provider.restaurantResultResponse.id ?? "",
+                          provider.name.text,
+                          provider.review.text,
+                        );
+                      },
+                      child: const Text(
+                        "Send",
+                        style: TextStyle(
+                            fontFamily: "Poppins Regular", color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  provider.stateReview != null
+                      ? _updateReviewRestaurant()
+                      : ListReview(
+                          provider: provider, from: Globals.fromDetail),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 45),
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 175, 175, 175),
+                    blurRadius: 0.5,
+                    spreadRadius: 0.2,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                      "https://restaurant-api.dicoding.dev/images/medium/${result.pictureId}"),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _favoriteButton(
+      DetailRestaurantProvider provider, BuildContext context) {
+    return IconButton(
+      onPressed: (() {
+        provider.isFavorite
+            ? provider.setFavorite(false)
+            : provider.setFavorite(true);
+        SnackBar addFavorite = _snackBar(
+          "${provider.restaurantResultResponse.name} added to favorite",
         );
-      },
+        SnackBar deleteFavorite = _snackBar(
+          "${provider.restaurantResultResponse.name} deleted from favorite",
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          provider.isFavorite ? addFavorite : deleteFavorite,
+        );
+      }),
+      icon: provider.isFavorite
+          ? const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            )
+          : const Icon(
+              Icons.favorite_border,
+              color: Colors.white,
+            ),
+    );
+  }
+
+  SnackBar _snackBar(String message) {
+    return SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 1),
     );
   }
 }
