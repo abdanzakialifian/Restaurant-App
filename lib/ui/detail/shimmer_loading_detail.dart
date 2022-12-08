@@ -120,11 +120,10 @@ class ShimmerLoadingDetail extends StatelessWidget {
                   ShimmerLoading(
                     widget: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Expanded(
-                        child: Container(
-                          height: 150,
-                          color: Colors.grey,
-                        ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 150,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
@@ -181,11 +180,10 @@ class ShimmerLoadingDetail extends StatelessWidget {
                   ShimmerLoading(
                     widget: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Expanded(
-                        child: Container(
-                          height: 30,
-                          color: Colors.grey,
-                        ),
+                      child: Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
@@ -195,11 +193,10 @@ class ShimmerLoadingDetail extends StatelessWidget {
                   ShimmerLoading(
                     widget: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Expanded(
-                        child: Container(
-                          height: 50,
-                          color: Colors.grey,
-                        ),
+                      child: Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
@@ -209,11 +206,10 @@ class ShimmerLoadingDetail extends StatelessWidget {
                   ShimmerLoading(
                     widget: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Expanded(
-                        child: Container(
-                          height: 20,
-                          color: Colors.grey,
-                        ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 20,
+                        color: Colors.grey,
                       ),
                     ),
                   ),

@@ -14,13 +14,12 @@ class ListRestaurant extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView.separated(
+    return ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 15),
         separatorBuilder: (context, index) => const SizedBox(
-          height: 20,
-        ),
+              height: 20,
+            ),
         shrinkWrap: true,
         itemCount: listRestaurants.length,
         itemBuilder: (context, index) {
@@ -136,8 +135,6 @@ class ListRestaurant extends StatelessWidget {
               ),
             ),
           );
-        },
-      ),
-    );
+        });
   }
 }

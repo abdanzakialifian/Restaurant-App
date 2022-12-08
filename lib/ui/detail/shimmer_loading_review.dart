@@ -57,22 +57,20 @@ class ShimmerLoadingReview extends StatelessWidget {
               height: 10,
             ),
             ShimmerLoading(
-              widget: Expanded(
-                child: Container(
-                  height: 50,
-                  color: Colors.grey,
-                ),
+              widget: Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.grey,
               ),
             ),
             const SizedBox(
               height: 10,
             ),
             ShimmerLoading(
-              widget: Expanded(
-                child: Container(
-                  height: 1,
-                  color: Colors.grey,
-                ),
+              widget: Container(
+                height: 1,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.grey,
               ),
             ),
           ],
