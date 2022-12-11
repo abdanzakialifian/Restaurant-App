@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/detail_restaurant_response.dart';
+import 'package:restaurant_app/data/source/remote/api_service.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 
 class DetailRestaurantProvider extends ChangeNotifier {
@@ -10,6 +10,7 @@ class DetailRestaurantProvider extends ChangeNotifier {
   ResultState? _stateReview;
   late RestaurantResultResponse _restaurantResultResponse;
   late List<CustomerReviewResponse> _customerReviewResponse;
+  late String _message;
   bool _isFavorite = false;
 
   ResultState get state => _state;
@@ -18,6 +19,7 @@ class DetailRestaurantProvider extends ChangeNotifier {
       _restaurantResultResponse;
   List<CustomerReviewResponse> get customerReviewResponse =>
       _customerReviewResponse;
+  String get message => _message;
   bool get isFavorite => _isFavorite;
 
   TextEditingController name = TextEditingController();
@@ -43,6 +45,7 @@ class DetailRestaurantProvider extends ChangeNotifier {
       final detailRestaurant = await apiService.fetchDetailRestaurant(id);
       if (detailRestaurant.restaurant == null) {
         _state = ResultState.noData;
+        _message = "Data is Empty";
         notifyListeners();
       } else {
         _state = ResultState.hasData;
@@ -52,7 +55,9 @@ class DetailRestaurantProvider extends ChangeNotifier {
       }
     } catch (e) {
       _state = ResultState.hasError;
+      _message = "Failed to Load Data";
       notifyListeners();
+      return _message;
     }
   }
 
@@ -64,6 +69,7 @@ class DetailRestaurantProvider extends ChangeNotifier {
           await apiService.reviewRestuarant(id, name, review);
       if (reviewRestaurant.customerReviews?.isEmpty == true) {
         _stateReview = ResultState.noData;
+        _message = "Data is Empty";
         notifyListeners();
       } else {
         _stateReview = ResultState.hasData;
@@ -73,6 +79,7 @@ class DetailRestaurantProvider extends ChangeNotifier {
       }
     } catch (e) {
       _stateReview = ResultState.hasError;
+      _message = "Failed to Load Data";
       notifyListeners();
     }
   }
