@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/model/resturant_favorite.dart';
 import 'package:restaurant_app/data/source/local/database_helper.dart';
-import 'package:restaurant_app/utils/globals.dart';
+import 'package:restaurant_app/utils/result_state.dart';
 
 class RestaurantFavoriteProvider extends ChangeNotifier {
   final DatabaseHelper databaseHelper;
-  String _message = "";
-  List<RestaurantFavorite> _listRestaurant = [];
+  late String _message;
+  late List<RestaurantFavorite> _listRestaurant;
 
   String get message => _message;
   List<RestaurantFavorite> get listRestaurant => _listRestaurant;
-  String to = "";
 
-  RestaurantFavoriteProvider({required this.databaseHelper, required this.to}) {
-    if (to == Globals.toFavorite) {
-      getAllRestaurant();
-    }
-  }
+  RestaurantFavoriteProvider({required this.databaseHelper});
 
-  Future<void> insertRestaurant(
+  Future insertRestaurant(
       RestaurantFavorite restaurantFavorite, String id) async {
     try {
       await databaseHelper.insertRestaurant(restaurantFavorite);
-      _message = "${restaurantFavorite.name} added to favorite.";
       isFavorite(id);
+      _message = "${restaurantFavorite.name} added to favorite.";
       notifyListeners();
     } catch (e) {
       _message = "Failed to Insert Data.";
@@ -31,12 +26,12 @@ class RestaurantFavoriteProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteRestaurant(
+  Future deleteRestaurant(
       RestaurantFavorite restaurantFavorite, String id) async {
     try {
       await databaseHelper.deleteRestaurant(id);
-      _message = "${restaurantFavorite.name} deleted from favorite.";
       isFavorite(id);
+      _message = "${restaurantFavorite.name} deleted from favorite.";
       notifyListeners();
     } catch (e) {
       _message = "Failed to Delete Data.";
@@ -49,15 +44,20 @@ class RestaurantFavoriteProvider extends ChangeNotifier {
     return favorite.isNotEmpty;
   }
 
-  Future getAllRestaurant() async {
-    var awaitData = await databaseHelper.getAllRestaurant();
-    notifyListeners();
-    if (awaitData.isNotEmpty) {
-      _listRestaurant = awaitData;
+  Future<dynamic> getAllRestaurant() async {
+    _listRestaurant = await databaseHelper.getAllRestaurant();
+    try {
+      if (_listRestaurant.isNotEmpty) {
+        return ResultState.hasData;
+      } else {
+        _message = "Data is Empty.";
+        notifyListeners();
+        return ResultState.noData;
+      }
+    } catch (e) {
+      _message = "Get Data Error.";
       notifyListeners();
-    } else {
-      _message = "Data is Empty";
-      notifyListeners();
+      return ResultState.hasError;
     }
   }
 }

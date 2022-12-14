@@ -22,7 +22,7 @@ class RestaurantListProvider extends ChangeNotifier {
     query.isNotEmpty ? _searchRestaurant(query) : _fetchRestaurant();
   }
 
-  Future _fetchRestaurant() async {
+  void _fetchRestaurant() async {
     try {
       _state = ResultState.loading;
       notifyListeners();
@@ -33,8 +33,8 @@ class RestaurantListProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         _state = ResultState.hasData;
-        notifyListeners();
         _restaurantList = restaurant.restaurants ?? <RestaurantDataResponse>[];
+        notifyListeners();
       }
     } catch (e) {
       _state = ResultState.hasError;
@@ -43,7 +43,7 @@ class RestaurantListProvider extends ChangeNotifier {
     }
   }
 
-  Future _searchRestaurant(String query) async {
+  void _searchRestaurant(String query) async {
     try {
       _state = ResultState.loading;
       notifyListeners();
@@ -54,9 +54,9 @@ class RestaurantListProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         _state = ResultState.hasData;
-        notifyListeners();
         _restaurantList =
             searchRestaurant.restaurants ?? <RestaurantDataResponse>[];
+        notifyListeners();
       }
     } catch (e) {
       _state = ResultState.hasError;

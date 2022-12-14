@@ -9,7 +9,6 @@ import 'package:restaurant_app/ui/globals/empty_animation.dart';
 import 'package:restaurant_app/ui/globals/error_animation.dart';
 import 'package:restaurant_app/ui/home/list_restaurant.dart';
 import 'package:restaurant_app/ui/home/shimmer_loading_restaurant.dart';
-import 'package:restaurant_app/utils/globals.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 
 class HomePage extends StatelessWidget {
@@ -65,7 +64,6 @@ class HomePage extends StatelessWidget {
                           return ChangeNotifierProvider(
                             create: (context) => RestaurantFavoriteProvider(
                               databaseHelper: DatabaseHelper(),
-                              to: Globals.toFavorite,
                             ),
                             child: const FavoritePage(),
                           );

@@ -38,7 +38,7 @@ class DetailRestaurantProvider extends ChangeNotifier {
     _postCustomerReview(id, name, review);
   }
 
-  Future _fetchDetailRestaurant(String id) async {
+  void _fetchDetailRestaurant(String id) async {
     try {
       _state = ResultState.loading;
       notifyListeners();
@@ -49,19 +49,18 @@ class DetailRestaurantProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         _state = ResultState.hasData;
-        notifyListeners();
         _restaurantResultResponse =
             detailRestaurant.restaurant ?? RestaurantResultResponse();
+        notifyListeners();
       }
     } catch (e) {
       _state = ResultState.hasError;
       _message = "Failed to Load Data";
       notifyListeners();
-      return _message;
     }
   }
 
-  Future _postCustomerReview(String id, String name, String review) async {
+  void _postCustomerReview(String id, String name, String review) async {
     try {
       _stateReview = ResultState.loading;
       notifyListeners();
@@ -73,9 +72,9 @@ class DetailRestaurantProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         _stateReview = ResultState.hasData;
-        notifyListeners();
         _customerReviewResponse =
             reviewRestaurant.customerReviews ?? <CustomerReviewResponse>[];
+        notifyListeners();
       }
     } catch (e) {
       _stateReview = ResultState.hasError;

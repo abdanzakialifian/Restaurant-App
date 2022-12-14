@@ -26,8 +26,14 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: darkGreen,
-      body: SafeArea(
-        child: _getDetailRestaurant(context),
+      body: WillPopScope(
+        onWillPop: () {
+          Navigator.pop(context, Globals.rebuildPage);
+          return Future.value(false);
+        },
+        child: SafeArea(
+          child: _getDetailRestaurant(context),
+        ),
       ),
     );
   }
@@ -113,7 +119,7 @@ class DetailPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(context, Globals.rebuildPage),
                 icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.white,

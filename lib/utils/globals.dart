@@ -3,6 +3,10 @@ class Globals {
   static const fromReview = "FROM REVIEW";
   static const foodMenu = "FOOD MENU";
   static const drinkMenu = "DRINK MENU";
-  static const toDetail = "TO DETAIL";
-  static const toFavorite = "TO FAVORITE";
+  static const rebuildPage = "REBUILD PAGE";
+  static const baseUrlImage =
+      "https://restaurant-api.dicoding.dev/images/medium/";
+  static const hasData = "HashData";
+  static const noData = "HashNoData";
+  static const hasError = "HashError";
 }

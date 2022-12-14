@@ -43,7 +43,6 @@ class ListRestaurant extends StatelessWidget {
                         ChangeNotifierProvider(
                           create: (context) => RestaurantFavoriteProvider(
                             databaseHelper: DatabaseHelper(),
-                            to: Globals.toDetail,
                           ),
                         ),
                       ],
@@ -77,7 +76,7 @@ class ListRestaurant extends StatelessWidget {
                       topRight: Radius.circular(15),
                     ),
                     child: Image.network(
-                      "https://restaurant-api.dicoding.dev/images/medium/${restaurants.pictureId}",
+                      Globals.baseUrlImage + restaurants.pictureId.toString(),
                       height: 150,
                       fit: BoxFit.cover,
                     ),

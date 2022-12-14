@@ -18,7 +18,7 @@ class FavoriteSnackbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        final Future<void> awaitData;
+        final Future awaitData;
 
         if (isFavorite) {
           awaitData = provider.deleteRestaurant(
@@ -32,15 +32,13 @@ class FavoriteSnackbar extends StatelessWidget {
           );
         }
 
-        awaitData.whenComplete(
-          () {
-            SnackBar snackBar = SnackBar(
-              content: Text(provider.message),
-              duration: const Duration(milliseconds: 500),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          },
-        );
+        awaitData.whenComplete(() {
+          SnackBar snackBar = SnackBar(
+            content: Text(provider.message),
+            duration: const Duration(milliseconds: 500),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        });
       },
       icon: isFavorite
           ? const Icon(
