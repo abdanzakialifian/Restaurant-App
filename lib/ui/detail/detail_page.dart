@@ -17,10 +17,25 @@ import 'package:restaurant_app/ui/globals/error_animation.dart';
 import 'package:restaurant_app/utils/globals.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final String id;
 
   const DetailPage({Key? key, required this.id}) : super(key: key);
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      DetailRestaurantProvider provider = Provider.of(context, listen: false);
+      provider.fetchDetailRestaurant(widget.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +57,6 @@ class DetailPage extends StatelessWidget {
     return Consumer<DetailRestaurantProvider>(
       builder: (context, value, child) {
         switch (value.state) {
-          case ResultState.loading:
-            return const ShimmerLoadingDetail();
           case ResultState.noData:
             return SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -51,14 +64,14 @@ class DetailPage extends StatelessWidget {
               child: Center(
                 child: EmptyAnimation(
                   textColor: Colors.white,
-                  errorMessage: value.message,
+                  errorMessage: value.message ?? "",
                 ),
               ),
             );
           case ResultState.hasData:
             return _detailRestaurantInformation(
               context,
-              value.restaurantResultResponse,
+              value.restaurantResultResponse ?? RestaurantResultResponse(),
               value,
             );
           case ResultState.hasError:
@@ -68,10 +81,12 @@ class DetailPage extends StatelessWidget {
               child: Center(
                 child: ErrorAnimation(
                   textColor: Colors.white,
-                  errorMessage: value.message,
+                  errorMessage: value.message ?? "",
                 ),
               ),
             );
+          default:
+            return const ShimmerLoadingDetail();
         }
       },
     );
@@ -86,14 +101,14 @@ class DetailPage extends StatelessWidget {
           case ResultState.noData:
             return EmptyAnimation(
               textColor: Colors.white,
-              errorMessage: value.message,
+              errorMessage: value.message ?? "",
             );
           case ResultState.hasData:
             return ListReview(provider: value, from: Globals.fromReview);
           case ResultState.hasError:
             return ErrorAnimation(
               textColor: Colors.white,
-              errorMessage: value.message,
+              errorMessage: value.message ?? "",
             );
         }
       },
@@ -317,7 +332,7 @@ class DetailPage extends StatelessWidget {
                           ),
                           onPressed: () {
                             provider.postReviewCustomer(
-                              provider.restaurantResultResponse.id ?? "",
+                              provider.restaurantResultResponse?.id,
                               provider.name.text,
                               provider.review.text,
                             );
@@ -374,7 +389,7 @@ class DetailPage extends StatelessWidget {
     return Consumer<RestaurantFavoriteProvider>(
       builder: (context, value, child) {
         return FutureBuilder<bool>(
-          future: value.isFavorite(id),
+          future: value.isFavorite(widget.id),
           builder: (context, snapshot) {
             bool isFavorite = snapshot.data ?? false;
             return FavoriteSnackbar(

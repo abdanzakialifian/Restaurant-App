@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/source/local/database_helper.dart';
-import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_list_provider.dart';
 import 'package:restaurant_app/style/color.dart';
 import 'package:restaurant_app/ui/favorite/favorite_page.dart';
@@ -9,10 +7,26 @@ import 'package:restaurant_app/ui/globals/empty_animation.dart';
 import 'package:restaurant_app/ui/globals/error_animation.dart';
 import 'package:restaurant_app/ui/home/list_restaurant.dart';
 import 'package:restaurant_app/ui/home/shimmer_loading_restaurant.dart';
+import 'package:restaurant_app/ui/settings/settings_page.dart';
+import 'package:restaurant_app/utils/notification_helper.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final NotificationHelper _notificationHelper = NotificationHelper();
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationHelper.configureDidReceiveLocalNotificationSubject(context);
+    _notificationHelper.configureSelectedNotificationSubject(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,25 +70,40 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ChangeNotifierProvider(
-                            create: (context) => RestaurantFavoriteProvider(
-                              databaseHelper: DatabaseHelper(),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const FavoritePage()),
+                        ),
+                        icon: const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          final provider = Provider.of<RestaurantListProvider>(
+                              context,
+                              listen: false);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SettingsPage(
+                                listRestaurant: provider.result ?? [],
+                              ),
                             ),
-                            child: const FavoritePage(),
                           );
                         },
-                      ),
-                    ),
-                    icon: const Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 30,
-                    ),
+                        icon: const Icon(
+                          Icons.settings,
+                        ),
+                      )
+                    ],
                   )
                 ],
               ),
@@ -157,25 +186,32 @@ class HomePage extends StatelessWidget {
     return Consumer<RestaurantListProvider>(
       builder: (context, value, child) {
         switch (value.state) {
-          case ResultState.loading:
-            return const ShimmerLoadingRestaurant();
           case ResultState.noData:
             return EmptyAnimation(
               textColor: darkGreen,
-              errorMessage: value.message,
+              errorMessage: value.message ?? "",
             );
           case ResultState.hasData:
-            return ListRestaurant(listRestaurants: value.result);
+            return ListRestaurant(listRestaurants: value.result ?? []);
           case ResultState.hasError:
             return Container(
               margin: const EdgeInsets.only(top: 150),
               child: ErrorAnimation(
                 textColor: Colors.red,
-                errorMessage: value.message,
+                errorMessage: value.message ?? "",
               ),
             );
+          default:
+            return const ShimmerLoadingRestaurant();
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    selectedNotificationSubject.close();
+    didReceiveLocalNotificationSubject.close();
+    super.dispose();
   }
 }

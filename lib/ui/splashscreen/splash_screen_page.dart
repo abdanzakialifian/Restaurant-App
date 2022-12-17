@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/source/remote/api_service.dart';
-import 'package:restaurant_app/provider/restaurant_list_provider.dart';
 import '../home/home_page.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -22,14 +19,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) {
-            return ChangeNotifierProvider<RestaurantListProvider>(
-              create: (context) => RestaurantListProvider(
-                apiService: ApiService(),
-              ),
-              child: const HomePage(),
-            );
-          },
+          builder: (context) => const HomePage(),
         ),
       ),
     );

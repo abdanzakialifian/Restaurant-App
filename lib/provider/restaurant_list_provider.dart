@@ -6,13 +6,13 @@ import '../data/model/restaurant_list_response.dart';
 class RestaurantListProvider extends ChangeNotifier {
   final ApiService apiService;
 
-  late List<RestaurantDataResponse> _restaurantList;
-  late ResultState _state;
-  late String _message;
+  List<RestaurantDataResponse>? _restaurantList;
+  ResultState? _state;
+  String? _message;
 
-  List<RestaurantDataResponse> get result => _restaurantList;
-  ResultState get state => _state;
-  String get message => _message;
+  List<RestaurantDataResponse>? get result => _restaurantList;
+  ResultState? get state => _state;
+  String? get message => _message;
 
   RestaurantListProvider({required this.apiService}) {
     _fetchRestaurant();

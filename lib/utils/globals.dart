@@ -6,7 +6,4 @@ class Globals {
   static const rebuildPage = "REBUILD PAGE";
   static const baseUrlImage =
       "https://restaurant-api.dicoding.dev/images/medium/";
-  static const hasData = "HashData";
-  static const noData = "HashNoData";
-  static const hasError = "HashError";
 }

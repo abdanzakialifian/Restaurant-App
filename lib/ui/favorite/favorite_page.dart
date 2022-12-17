@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/resturant_favorite.dart';
-import 'package:restaurant_app/data/source/local/database_helper.dart';
-import 'package:restaurant_app/data/source/remote/api_service.dart';
-import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 import 'package:restaurant_app/style/color.dart';
 import 'package:restaurant_app/ui/detail/detail_page.dart';
@@ -23,77 +20,82 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   @override
   Widget build(BuildContext context) {
-    RestaurantFavoriteProvider provider =
-        Provider.of<RestaurantFavoriteProvider>(context, listen: false);
     return Scaffold(
-      body: FutureBuilder(
-        future: provider.getAllRestaurant(),
-        builder: (context, snapshot) {
-          switch (snapshot.data) {
-            case ResultState.hasData:
-              return _appbar(provider, context, Globals.hasData);
-            case ResultState.noData:
-              return EmptyAnimation(
-                textColor: darkGreen,
-                errorMessage: provider.message,
-              );
-            case ResultState.hasError:
-              return ErrorAnimation(
-                textColor: Colors.red,
-                errorMessage: provider.message,
-              );
-            default:
-              return const CircularProgressIndicator(
-                color: darkGreen,
-              );
-          }
-        },
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 5,
+                top: 12,
+                right: 5,
+                bottom: 15,
+              ),
+              child: SizedBox(
+                height: 40,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: const Center(
+                        child: Text(
+                          "Favorite",
+                          style: TextStyle(
+                            fontFamily: "Poppins Bold",
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(child: _getRestaurantFavorite()),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _appbar(
-      RestaurantFavoriteProvider provider, BuildContext context, String state) {
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 5,
-              top: 12,
-              right: 5,
-              bottom: 15,
-            ),
-            child: SizedBox(
-              height: 40,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: const Center(
-                      child: Text(
-                        "Favorite",
-                        style: TextStyle(
-                          fontFamily: "Poppins Bold",
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                ],
+  Widget _getRestaurantFavorite() {
+    RestaurantFavoriteProvider provider =
+        Provider.of<RestaurantFavoriteProvider>(context, listen: false);
+    return FutureBuilder(
+      future: provider.getAllRestaurant(),
+      builder: (context, snapshot) {
+        switch (snapshot.data) {
+          case ResultState.hasData:
+            return _listFavorite(
+              provider.listRestaurant ?? [],
+            );
+          case ResultState.noData:
+            return Center(
+              child: EmptyAnimation(
+                textColor: darkGreen,
+                errorMessage: provider.message ?? "",
               ),
-            ),
-          ),
-          Expanded(
-            child: _listFavorite(provider.listRestaurant),
-          ),
-        ],
-      ),
+            );
+          case ResultState.hasError:
+            return Center(
+              child: ErrorAnimation(
+                textColor: Colors.red,
+                errorMessage: provider.message ?? "",
+              ),
+            );
+          default:
+            return const Center(
+              child: CircularProgressIndicator(
+                color: darkGreen,
+              ),
+            );
+        }
+      },
     );
   }
 
@@ -112,26 +114,9 @@ class _FavoritePageState extends State<FavoritePage> {
               var awaitData = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) {
-                    return MultiProvider(
-                      providers: [
-                        ChangeNotifierProvider(
-                          create: (context) => DetailRestaurantProvider(
-                            apiService: ApiService(),
-                            id: restaurant.id ?? "",
-                          ),
-                        ),
-                        ChangeNotifierProvider(
-                          create: (context) => RestaurantFavoriteProvider(
-                            databaseHelper: DatabaseHelper(),
-                          ),
-                        ),
-                      ],
-                      child: DetailPage(
-                        id: restaurant.id ?? "",
-                      ),
-                    );
-                  },
+                  builder: (context) => DetailPage(
+                    id: restaurant.id ?? "",
+                  ),
                 ),
               );
 

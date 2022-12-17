@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/source/local/database_helper.dart';
+import 'package:restaurant_app/data/source/remote/api_service.dart';
+import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
+import 'package:restaurant_app/provider/restaurant_list_provider.dart';
 import 'package:restaurant_app/style/color.dart';
 import 'package:restaurant_app/ui/splashscreen/splash_screen_page.dart';
+import 'package:restaurant_app/utils/notification_helper.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final NotificationHelper notificationHelper = NotificationHelper();
+
+  await notificationHelper.initNotification(flutterLocalNotificationsPlugin);
+  notificationHelper.requestIOSPermission(flutterLocalNotificationsPlugin);
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: darkGreen),
   );
@@ -15,13 +33,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Restaurant App",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RestaurantListProvider>(
+          create: (context) => RestaurantListProvider(
+            apiService: ApiService(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DetailRestaurantProvider(
+            apiService: ApiService(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RestaurantFavoriteProvider(
+            databaseHelper: DatabaseHelper(),
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        title: "Restaurant App",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+        ),
+        home: const SplashScreenPage(),
       ),
-      home: const SplashScreenPage(),
     );
   }
 }

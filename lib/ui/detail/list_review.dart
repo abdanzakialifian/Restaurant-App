@@ -16,10 +16,10 @@ class ListReview extends StatelessWidget {
     List<CustomerReviewResponse> listReview = [];
     from == Globals.fromDetail
         ? listReview = provider
-                .restaurantResultResponse.customerReviews?.reversed
+                .restaurantResultResponse?.customerReviews?.reversed
                 .toList() ??
             []
-        : listReview = provider.customerReviewResponse.reversed.toList();
+        : listReview = provider.customerReviewResponse?.reversed.toList() ?? [];
 
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),

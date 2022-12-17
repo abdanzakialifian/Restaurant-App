@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/restaurant_list_response.dart';
-import 'package:restaurant_app/data/source/local/database_helper.dart';
-import 'package:restaurant_app/data/source/remote/api_service.dart';
-import 'package:restaurant_app/provider/detail_restaurant_provider.dart';
-import 'package:restaurant_app/provider/restaurant_favorite_provider.dart';
 import 'package:restaurant_app/ui/detail/detail_page.dart';
 import 'package:restaurant_app/utils/globals.dart';
 
@@ -31,26 +26,9 @@ class ListRestaurant extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) {
-                    return MultiProvider(
-                      providers: [
-                        ChangeNotifierProvider(
-                          create: (context) => DetailRestaurantProvider(
-                            apiService: ApiService(),
-                            id: restaurants.id ?? "",
-                          ),
-                        ),
-                        ChangeNotifierProvider(
-                          create: (context) => RestaurantFavoriteProvider(
-                            databaseHelper: DatabaseHelper(),
-                          ),
-                        ),
-                      ],
-                      child: DetailPage(
-                        id: restaurants.id ?? "",
-                      ),
-                    );
-                  },
+                  builder: (context) => DetailPage(
+                    id: restaurants.id ?? "",
+                  ),
                 ),
               );
             },

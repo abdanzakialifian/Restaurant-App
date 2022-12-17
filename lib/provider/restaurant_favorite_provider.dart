@@ -5,11 +5,11 @@ import 'package:restaurant_app/utils/result_state.dart';
 
 class RestaurantFavoriteProvider extends ChangeNotifier {
   final DatabaseHelper databaseHelper;
-  late String _message;
-  late List<RestaurantFavorite> _listRestaurant;
+  String? _message;
+  List<RestaurantFavorite>? _listRestaurant;
 
-  String get message => _message;
-  List<RestaurantFavorite> get listRestaurant => _listRestaurant;
+  String? get message => _message;
+  List<RestaurantFavorite>? get listRestaurant => _listRestaurant;
 
   RestaurantFavoriteProvider({required this.databaseHelper});
 
@@ -47,7 +47,7 @@ class RestaurantFavoriteProvider extends ChangeNotifier {
   Future<dynamic> getAllRestaurant() async {
     _listRestaurant = await databaseHelper.getAllRestaurant();
     try {
-      if (_listRestaurant.isNotEmpty) {
+      if (_listRestaurant?.isNotEmpty == true) {
         return ResultState.hasData;
       } else {
         _message = "Data is Empty.";

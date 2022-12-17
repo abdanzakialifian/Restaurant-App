@@ -19,9 +19,9 @@ class ListMenus extends StatelessWidget {
   Widget build(BuildContext context) {
     List<CategoryResponse> listMenus;
     menus == Globals.foodMenu
-        ? listMenus = provider.restaurantResultResponse.menus?.foods ??
+        ? listMenus = provider.restaurantResultResponse?.menus?.foods ??
             <CategoryResponse>[]
-        : listMenus = provider.restaurantResultResponse.menus?.drinks ??
+        : listMenus = provider.restaurantResultResponse?.menus?.drinks ??
             <CategoryResponse>[];
 
     return ListView.separated(

@@ -6,39 +6,37 @@ import 'package:restaurant_app/utils/result_state.dart';
 class DetailRestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
 
-  late ResultState _state;
+  ResultState? _state;
   ResultState? _stateReview;
-  late RestaurantResultResponse _restaurantResultResponse;
-  late List<CustomerReviewResponse> _customerReviewResponse;
-  late String _message;
+  RestaurantResultResponse? _restaurantResultResponse;
+  List<CustomerReviewResponse>? _customerReviewResponse;
+  String? _message;
   bool _isFavorite = false;
 
-  ResultState get state => _state;
+  ResultState? get state => _state;
   ResultState? get stateReview => _stateReview;
-  RestaurantResultResponse get restaurantResultResponse =>
+  RestaurantResultResponse? get restaurantResultResponse =>
       _restaurantResultResponse;
-  List<CustomerReviewResponse> get customerReviewResponse =>
+  List<CustomerReviewResponse>? get customerReviewResponse =>
       _customerReviewResponse;
-  String get message => _message;
+  String? get message => _message;
   bool get isFavorite => _isFavorite;
 
   TextEditingController name = TextEditingController();
   TextEditingController review = TextEditingController();
 
-  DetailRestaurantProvider({required this.apiService, required String id}) {
-    _fetchDetailRestaurant(id);
-  }
+  DetailRestaurantProvider({required this.apiService});
 
   void setFavorite(bool isFavorite) {
     _isFavorite = isFavorite;
     notifyListeners();
   }
 
-  void postReviewCustomer(String id, String name, String review) {
+  void postReviewCustomer(String? id, String? name, String? review) {
     _postCustomerReview(id, name, review);
   }
 
-  void _fetchDetailRestaurant(String id) async {
+  void fetchDetailRestaurant(String id) async {
     try {
       _state = ResultState.loading;
       notifyListeners();
@@ -60,12 +58,12 @@ class DetailRestaurantProvider extends ChangeNotifier {
     }
   }
 
-  void _postCustomerReview(String id, String name, String review) async {
+  void _postCustomerReview(String? id, String? name, String? review) async {
     try {
       _stateReview = ResultState.loading;
       notifyListeners();
       final reviewRestaurant =
-          await apiService.reviewRestuarant(id, name, review);
+          await apiService.reviewRestuarant(id ?? "", name ?? "", review ?? "");
       if (reviewRestaurant.customerReviews?.isEmpty == true) {
         _stateReview = ResultState.noData;
         _message = "Data is Empty";
