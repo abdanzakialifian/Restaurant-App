@@ -87,15 +87,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                       IconButton(
                         onPressed: () {
-                          final provider = Provider.of<RestaurantListProvider>(
-                              context,
-                              listen: false);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SettingsPage(
-                                listRestaurant: provider.result ?? [],
-                              ),
+                              builder: (context) => const SettingsPage(),
                             ),
                           );
                         },

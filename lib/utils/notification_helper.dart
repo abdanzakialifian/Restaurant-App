@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restaurant_app/data/model/restaurant_list_response.dart';
 import 'package:restaurant_app/data/model/restuarant_notification.dart';
-import 'package:restaurant_app/data/source/remote/api_service.dart';
 import 'package:restaurant_app/ui/detail/detail_page.dart';
 import 'package:restaurant_app/utils/globals.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,7 +20,6 @@ class NotificationHelper {
   static const _channelName = "restaurant_info";
   static const _channelDesc = "restaurant information channel";
   static NotificationHelper? _instance;
-  String? id;
 
   NotificationHelper._internal() {
     _instance = this;
@@ -41,7 +39,7 @@ class NotificationHelper {
       onDidReceiveLocalNotification: (id, title, body, payload) async {
         didReceiveLocalNotificationSubject.add(
           RestaurantNotification(
-            id: this.id ?? "",
+            id: payload,
             title: title,
             body: body,
             payload: payload,
@@ -58,7 +56,7 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (details) async {
-        selectedNotificationSubject.add(id ?? "");
+        selectedNotificationSubject.add(details.payload ?? "");
       },
     );
   }
@@ -121,12 +119,11 @@ class NotificationHelper {
   }
 
   Future showNotification(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    var restaurant = await ApiService().fetchListRestaurants();
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      RestaurantListResponse restaurant) async {
     List<RestaurantDataResponse> listRestaurant = restaurant.restaurants ?? [];
     var randomIndex = Random().nextInt(listRestaurant.length);
     var randomRestaurant = listRestaurant[randomIndex];
-    id = randomRestaurant.id;
 
     String imageUrl =
         Globals.baseUrlImage + randomRestaurant.pictureId.toString();
@@ -165,6 +162,7 @@ class NotificationHelper {
       randomRestaurant.name,
       description,
       platformChannelSpecifics,
+      payload: randomRestaurant.id,
     );
   }
 
