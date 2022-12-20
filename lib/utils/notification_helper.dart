@@ -122,7 +122,9 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       RestaurantListResponse restaurant) async {
     List<RestaurantDataResponse> listRestaurant = restaurant.restaurants ?? [];
+    // get random list
     var randomIndex = Random().nextInt(listRestaurant.length);
+    // get random restaurant
     var randomRestaurant = listRestaurant[randomIndex];
 
     String imageUrl =

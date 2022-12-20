@@ -189,12 +189,9 @@ class _HomePageState extends State<HomePage> {
           case ResultState.hasData:
             return ListRestaurant(listRestaurants: value.result ?? []);
           case ResultState.hasError:
-            return Container(
-              margin: const EdgeInsets.only(top: 150),
-              child: ErrorAnimation(
-                textColor: Colors.red,
-                errorMessage: value.message ?? "",
-              ),
+            return ErrorAnimation(
+              textColor: Colors.red,
+              errorMessage: value.message ?? "",
             );
           default:
             return const ShimmerLoadingRestaurant();

@@ -4,7 +4,7 @@ import 'package:restaurant_app/data/model/restaurant_list_response.dart';
 import 'package:restaurant_app/data/model/review_restaurant_response.dart';
 import 'package:restaurant_app/data/model/search_restaurant_response.dart';
 
-class ApiService {
+class ApiServiceDummyTest {
   static const String _baseUrl = "https://restaurant-api.dicoding.dev/";
   static const String _headers = "Content-Type";
   static const String _bodyHeaders = "application/x-www-form-urlencoded";
@@ -12,8 +12,9 @@ class ApiService {
   static const _name = "name";
   static const _review = "review";
 
-  Future<RestaurantListResponse> fetchListRestaurants() async {
-    final response = await http.get(Uri.parse("${_baseUrl}list"));
+  Future<RestaurantListResponse> fetchListRestaurants(
+      http.Client client) async {
+    final response = await client.get(Uri.parse("${_baseUrl}list"));
 
     if (response.statusCode == 200) {
       return restaurantListResponseFromJson(response.body);
@@ -22,8 +23,9 @@ class ApiService {
     }
   }
 
-  Future<SearchRestaurantResponse> searchRestaurant(String query) async {
-    final response = await http.get(Uri.parse("${_baseUrl}search?q=$query"));
+  Future<SearchRestaurantResponse> searchRestaurant(
+      http.Client client, String query) async {
+    final response = await client.get(Uri.parse("${_baseUrl}search?q=$query"));
 
     if (response.statusCode == 200) {
       return searchRestaurantResponseFromJson(response.body);
@@ -32,8 +34,9 @@ class ApiService {
     }
   }
 
-  Future<DetailRestaurantResponse> fetchDetailRestaurant(String id) async {
-    final response = await http.get(Uri.parse("${_baseUrl}detail/$id"));
+  Future<DetailRestaurantResponse> fetchDetailRestaurant(
+      http.Client client, String id) async {
+    final response = await client.get(Uri.parse("${_baseUrl}detail/$id"));
 
     if (response.statusCode == 200) {
       return detailRestaurantResponseFromJson(response.body);
@@ -43,8 +46,8 @@ class ApiService {
   }
 
   Future<ReviewRestaurantResponse> reviewRestuarant(
-      String id, String name, String review) async {
-    final response = await http.post(
+      http.Client client, String id, String name, String review) async {
+    final response = await client.post(
       Uri.parse("${_baseUrl}review"),
       headers: <String, String>{
         _headers: _bodyHeaders,

@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _instance;
-  static late Database _database;
+  late Database db;
   static const _tbRestaurant = "tb_restaurant";
 
   DatabaseHelper._internal() {
@@ -13,8 +13,8 @@ class DatabaseHelper {
   factory DatabaseHelper() => _instance ?? DatabaseHelper._internal();
 
   Future<Database> get database async {
-    _database = await initializeDb();
-    return _database;
+    db = await initializeDb();
+    return db;
   }
 
   Future<Database> initializeDb() async {
