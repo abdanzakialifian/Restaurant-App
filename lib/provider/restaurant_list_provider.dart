@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/source/remote/api_service.dart';
 import 'package:restaurant_app/utils/result_state.dart';
 import '../data/model/restaurant_list_response.dart';
+import 'package:http/http.dart' as http;
 
 class RestaurantListProvider extends ChangeNotifier {
   final ApiService apiService;

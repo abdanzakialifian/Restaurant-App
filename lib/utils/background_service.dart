@@ -1,6 +1,6 @@
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:http/http.dart' as http;
 import 'package:restaurant_app/data/source/remote/api_service.dart';
 import 'package:restaurant_app/main.dart';
 import 'package:restaurant_app/utils/notification_helper.dart';

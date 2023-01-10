@@ -8,14 +8,13 @@ import 'package:mockito/annotations.dart';
 import 'package:restaurant_app/data/model/restaurant_list_response.dart';
 import 'package:restaurant_app/data/model/review_restaurant_response.dart';
 import 'package:restaurant_app/data/model/search_restaurant_response.dart';
-
+import 'package:restaurant_app/data/source/remote/api_service.dart';
 import 'api_service_test.mocks.dart';
-import 'api_service_dummy_test.dart';
 
 @GenerateMocks([http.Client])
 void main() {
   final MockClient client = MockClient();
-  final ApiServiceDummyTest apiService = ApiServiceDummyTest();
+  final ApiService apiService = ApiService();
   const String baseUrl = "https://restaurant-api.dicoding.dev/";
   const String headers = "Content-Type";
   const String bodyHeaders = "application/x-www-form-urlencoded";
@@ -40,7 +39,7 @@ void main() {
             (_) async => http.Response(json.encode(fileJson), 200),
           );
 
-          expect(await apiService.fetchListRestaurants(client),
+          expect(await apiService.fetchListRestaurants(httpClient: client),
               isA<RestaurantListResponse>());
         },
       );
@@ -50,7 +49,7 @@ void main() {
           when(client.get(Uri.parse("${baseUrl}list"))).thenAnswer(
             (_) async => http.Response("Not found", 404),
           );
-          expect(apiService.fetchListRestaurants(client), throwsException);
+          expect(apiService.fetchListRestaurants(httpClient: client), throwsException);
         },
       );
     },
@@ -71,7 +70,7 @@ void main() {
           );
 
           expect(
-            await apiService.searchRestaurant(client, dummyQuery),
+            await apiService.searchRestaurant(dummyQuery, httpClient: client),
             isA<SearchRestaurantResponse>(),
           );
         },
@@ -84,7 +83,7 @@ void main() {
             (_) async => http.Response("Not Found", 404),
           );
           expect(
-              apiService.searchRestaurant(client, dummyQuery), throwsException);
+              apiService.searchRestaurant(dummyQuery, httpClient: client), throwsException);
         },
       );
     },
@@ -103,7 +102,7 @@ void main() {
             (_) async => http.Response(json.encode(fileJson), 200),
           );
 
-          expect(await apiService.fetchDetailRestaurant(client, dummyId),
+          expect(await apiService.fetchDetailRestaurant(dummyId, httpClient: client),
               isA<DetailRestaurantResponse>());
         },
       );
@@ -113,7 +112,7 @@ void main() {
           when(client.get(Uri.parse("${baseUrl}detail/$dummyId"))).thenAnswer(
             (_) async => http.Response("Not Found", 404),
           );
-          expect(apiService.fetchDetailRestaurant(client, dummyId),
+          expect(apiService.fetchDetailRestaurant(dummyId, httpClient: client),
               throwsException);
         },
       );
@@ -145,8 +144,7 @@ void main() {
             (_) async => http.Response(json.encode(fileJson), 200),
           );
           expect(
-              await apiService.reviewRestuarant(
-                  client, dummyId, dummyName, dummyReview),
+              await apiService.reviewRestuarant(dummyId, dummyName, dummyReview, httpClient: client),
               isA<ReviewRestaurantResponse>());
         },
       );
@@ -169,8 +167,7 @@ void main() {
             (_) async => http.Response("Not Found", 404),
           );
           expect(
-              apiService.reviewRestuarant(
-                  client, dummyId, dummyName, dummyReview),
+              apiService.reviewRestuarant(dummyId, dummyName, dummyReview, httpClient: client),
               throwsException);
         },
       );

@@ -5,7 +5,6 @@ import 'package:restaurant_app/data/model/resturant_favorite.dart';
 import 'package:restaurant_app/data/source/local/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
 import 'database_helper_test.mocks.dart';
 
 @GenerateMocks([DatabaseHelper])

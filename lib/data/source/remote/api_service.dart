@@ -12,8 +12,10 @@ class ApiService {
   static const _name = "name";
   static const _review = "review";
 
-  Future<RestaurantListResponse> fetchListRestaurants() async {
-    final response = await http.get(Uri.parse("${_baseUrl}list"));
+  Future<RestaurantListResponse> fetchListRestaurants({httpClient = http.Client}) async {
+    var client = (httpClient == http.Client) ? http.Client() : httpClient;
+
+    final response = await client.get(Uri.parse("${_baseUrl}list"));
 
     if (response.statusCode == 200) {
       return restaurantListResponseFromJson(response.body);
@@ -22,8 +24,10 @@ class ApiService {
     }
   }
 
-  Future<SearchRestaurantResponse> searchRestaurant(String query) async {
-    final response = await http.get(Uri.parse("${_baseUrl}search?q=$query"));
+  Future<SearchRestaurantResponse> searchRestaurant(String query, {httpClient = http.Client}) async {
+    var client = (httpClient == http.Client) ? http.Client() : httpClient;
+
+    final response = await client.get(Uri.parse("${_baseUrl}search?q=$query"));
 
     if (response.statusCode == 200) {
       return searchRestaurantResponseFromJson(response.body);
@@ -32,8 +36,10 @@ class ApiService {
     }
   }
 
-  Future<DetailRestaurantResponse> fetchDetailRestaurant(String id) async {
-    final response = await http.get(Uri.parse("${_baseUrl}detail/$id"));
+  Future<DetailRestaurantResponse> fetchDetailRestaurant(String id, {httpClient = http.Client}) async {
+    var client = (httpClient == http.Client) ? http.Client() : httpClient;
+
+    final response = await client.get(Uri.parse("${_baseUrl}detail/$id"));
 
     if (response.statusCode == 200) {
       return detailRestaurantResponseFromJson(response.body);
@@ -42,9 +48,10 @@ class ApiService {
     }
   }
 
-  Future<ReviewRestaurantResponse> reviewRestuarant(
-      String id, String name, String review) async {
-    final response = await http.post(
+  Future<ReviewRestaurantResponse> reviewRestuarant(String id, String name, String review, {httpClient = http.Client}) async {
+    var client = (httpClient == http.Client) ? http.Client() : httpClient;
+
+    final response = await client.post(
       Uri.parse("${_baseUrl}review"),
       headers: <String, String>{
         _headers: _bodyHeaders,
