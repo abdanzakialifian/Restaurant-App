@@ -13,6 +13,7 @@ class ListRestaurant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+     physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 15),
       separatorBuilder: (context, index) => const SizedBox(
         height: 20,

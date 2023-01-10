@@ -131,7 +131,11 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
-              Expanded(child: _getDataRestaurants(context)),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _getDataRestaurants(context),
+                ),
+              ),
             ],
           ),
         ),
